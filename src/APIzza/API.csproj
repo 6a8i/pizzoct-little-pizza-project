@@ -5,7 +5,16 @@
   </PropertyGroup>
 
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'APIzza' " />
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Models\Client\" />
+    <Folder Include="Entities\" />
+    <Folder Include="Context\" />
+    <Folder Include="Repository\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
   </ItemGroup>
 </Project>

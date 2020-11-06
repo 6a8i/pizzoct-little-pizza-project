@@ -28,7 +28,7 @@ namespace APIzza
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<DBCOntext>(options => options.UseInMemoryDatabase("pizzoct"));
+            services.AddDbContext<DBContext>(options => options.UseInMemoryDatabase("pizzoct"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

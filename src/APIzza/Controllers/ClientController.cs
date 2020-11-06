@@ -1,52 +1,86 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Context;
+using API.Entities;
 using API.Models.Client;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace APIzza.Controllers
 {
     [Route("api/[controller]")]
     public class ClientController : Controller
     {
+        private readonly DBContext _db;
+        public ClientController(DBContext db)
+        {
+            _db = db;
+        }
         /// <summary>
         /// Add a new client
         /// </summary>
         /// <param name="request"></param>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateClient.Request request)
+        public async Task<IActionResult> PostAsync([FromBody] CreateClient.Request request)
         {
-            return Created(string.Empty, string.Empty);
+            Client entity = request;
+
+            if (!(entity is null))
+            {
+                _db.Client.Add(entity);
+                await _db.SaveChangesAsync();
+            }
+
+            return Created(string.Empty, entity.Id.ToString());
         }
 
-        // GET
+        /// <summary>
+        /// Gets all the clients 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            return Ok();
+            SearchClient.Response response = new SearchClient.Response();
+            response.Clients = _db.Client.ToList().Select<Client, SearchClient.Client>(e => e).ToList();
+            return Ok(response);
         }
 
-        // GET 
+        /// <summary>
+        /// Gets a client by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        public IActionResult Get(Guid id)
         {
-            return Ok();
+            SearchClient.Response response = new SearchClient.Response();
+            response.Clients = _db.Client.Where(e => e.Id == id).ToList().Select<Client, SearchClient.Client>(e => e).ToList();
+            return Ok(response);
         }
 
-        // GET 
+        /// <summary>
+        /// Gets a client by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [HttpGet("{name}")]
-        public async Task<IActionResult> Get(string name)
+        public IActionResult Get(string name)
         {
-            return Ok();
+            SearchClient.Response response = new SearchClient.Response();
+            response.Clients = _db.Client.Where(e => e.Name == name).ToList().Select<Client, SearchClient.Client>(e => e).ToList();
+            return Ok(response);
         }
 
 
-        // PUT 
+        /// <summary>
+        /// Updates the client`s data
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateClient.Request request)
         {
             return Ok();
         }
